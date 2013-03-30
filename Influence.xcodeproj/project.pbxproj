@@ -22,6 +22,11 @@
 		DE88DB8A16EB8477007604AC /* Influence.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE88DB8816EB8477007604AC /* Influence.xcdatamodeld */; };
 		DE88DB8D16EB8477007604AC /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE88DB8C16EB8477007604AC /* MasterViewController.m */; };
 		DE88DB9016EB8477007604AC /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE88DB8F16EB8477007604AC /* DetailViewController.m */; };
+		DE88DBA216EB8EA1007604AC /* Log.m in Sources */ = {isa = PBXBuildFile; fileRef = DE88DBA116EB8EA1007604AC /* Log.m */; };
+		DE88DBA516EB8EAD007604AC /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = DE88DBA416EB8EAD007604AC /* Event.m */; };
+		DE88DBA816EB948B007604AC /* NSMutableArray+Stack.m in Sources */ = {isa = PBXBuildFile; fileRef = DE88DBA716EB948B007604AC /* NSMutableArray+Stack.m */; };
+		DEC532C216F5C13D0056C40C /* NewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC532C116F5C13D0056C40C /* NewCell.m */; };
+		DEC532C516F5C6A30056C40C /* CoreOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC532C416F5C6A30056C40C /* CoreOperations.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +51,16 @@
 		DE88DB8C16EB8477007604AC /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
 		DE88DB8E16EB8477007604AC /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		DE88DB8F16EB8477007604AC /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		DE88DBA016EB8EA1007604AC /* Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Log.h; sourceTree = "<group>"; };
+		DE88DBA116EB8EA1007604AC /* Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Log.m; sourceTree = "<group>"; };
+		DE88DBA316EB8EAD007604AC /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Event.h; path = ../Event.h; sourceTree = "<group>"; };
+		DE88DBA416EB8EAD007604AC /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Event.m; path = ../Event.m; sourceTree = "<group>"; };
+		DE88DBA616EB948B007604AC /* NSMutableArray+Stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Stack.h"; sourceTree = "<group>"; };
+		DE88DBA716EB948B007604AC /* NSMutableArray+Stack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Stack.m"; sourceTree = "<group>"; };
+		DEC532C016F5C13D0056C40C /* NewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewCell.h; sourceTree = "<group>"; };
+		DEC532C116F5C13D0056C40C /* NewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewCell.m; sourceTree = "<group>"; };
+		DEC532C316F5C6A30056C40C /* CoreOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreOperations.h; sourceTree = "<group>"; };
+		DEC532C416F5C6A30056C40C /* CoreOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreOperations.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +78,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DE4AA57217070F1B007F3138 /* Special Cells */ = {
+			isa = PBXGroup;
+			children = (
+				DEC532C016F5C13D0056C40C /* NewCell.h */,
+				DEC532C116F5C13D0056C40C /* NewCell.m */,
+			);
+			name = "Special Cells";
+			sourceTree = "<group>";
+		};
 		DE88DB5C16EB8477007604AC = {
 			isa = PBXGroup;
 			children = (
@@ -94,8 +118,10 @@
 		DE88DB7016EB8477007604AC /* Influence */ = {
 			isa = PBXGroup;
 			children = (
+				DE88DBA916EB9499007604AC /* Structure */,
 				DE88DB7916EB8477007604AC /* AppDelegate.h */,
 				DE88DB7A16EB8477007604AC /* AppDelegate.m */,
+				DE4AA57217070F1B007F3138 /* Special Cells */,
 				DE88DB8216EB8477007604AC /* MainStoryboard_iPhone.storyboard */,
 				DE88DB8516EB8477007604AC /* MainStoryboard_iPad.storyboard */,
 				DE88DB8B16EB8477007604AC /* MasterViewController.h */,
@@ -103,6 +129,7 @@
 				DE88DB8E16EB8477007604AC /* DetailViewController.h */,
 				DE88DB8F16EB8477007604AC /* DetailViewController.m */,
 				DE88DB8816EB8477007604AC /* Influence.xcdatamodeld */,
+				DE88DB9916EB8C25007604AC /* CoreData */,
 				DE88DB7116EB8477007604AC /* Supporting Files */,
 			);
 			path = Influence;
@@ -120,6 +147,28 @@
 				DE88DB8016EB8477007604AC /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		DE88DB9916EB8C25007604AC /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				DE88DBA016EB8EA1007604AC /* Log.h */,
+				DE88DBA116EB8EA1007604AC /* Log.m */,
+				DE88DBA316EB8EAD007604AC /* Event.h */,
+				DE88DBA416EB8EAD007604AC /* Event.m */,
+				DEC532C316F5C6A30056C40C /* CoreOperations.h */,
+				DEC532C416F5C6A30056C40C /* CoreOperations.m */,
+			);
+			name = CoreData;
+			sourceTree = "<group>";
+		};
+		DE88DBA916EB9499007604AC /* Structure */ = {
+			isa = PBXGroup;
+			children = (
+				DE88DBA616EB948B007604AC /* NSMutableArray+Stack.h */,
+				DE88DBA716EB948B007604AC /* NSMutableArray+Stack.m */,
+			);
+			name = Structure;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -194,6 +243,11 @@
 				DE88DB8A16EB8477007604AC /* Influence.xcdatamodeld in Sources */,
 				DE88DB8D16EB8477007604AC /* MasterViewController.m in Sources */,
 				DE88DB9016EB8477007604AC /* DetailViewController.m in Sources */,
+				DE88DBA216EB8EA1007604AC /* Log.m in Sources */,
+				DE88DBA516EB8EAD007604AC /* Event.m in Sources */,
+				DE88DBA816EB948B007604AC /* NSMutableArray+Stack.m in Sources */,
+				DEC532C216F5C13D0056C40C /* NewCell.m in Sources */,
+				DEC532C516F5C6A30056C40C /* CoreOperations.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,6 +380,7 @@
 				DE88DB9516EB8477007604AC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

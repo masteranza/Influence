@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "NSMutableArray+Stack.h"
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
@@ -18,5 +18,6 @@
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
-
+@property (strong, nonatomic) NSMutableArray* parentStack;
+@property (strong, nonatomic) MasterViewController* masterView;
 @end

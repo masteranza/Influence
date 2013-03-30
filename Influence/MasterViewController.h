@@ -7,16 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Event.h"
 
 @class DetailViewController;
-
+@class AppDelegate;
 #import <CoreData/CoreData.h>
 
 @interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate>
-
-@property (strong, nonatomic) DetailViewController *detailViewController;
+{
+    BOOL insertMode;
+}
+@property (strong, nonatomic) AppDelegate *appDelegate;
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
+- (void)back:(id)sender;
 @end

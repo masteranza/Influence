@@ -7,9 +7,9 @@
 //
 
 #import "MasterViewController.h"
-
+#import "AppDelegate.h"
 #import "DetailViewController.h"
-
+#import "NewCell.h"
 @interface MasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
@@ -29,11 +29,12 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    self.navigationItem.leftBarButtonItem =  [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self action:@selector(back:)];
+    //self.editButtonItem;
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
-    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+//    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
 - (void)didReceiveMemoryWarning
@@ -42,17 +43,38 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)back:(id)sender
+{
+    NSLog(@"Parents %d", self.appDelegate.parentStack.count);
+    if ([self.appDelegate.parentStack count]>0)
+    {
+        [self.appDelegate.parentStack pop];
+        NSLog(@"%d", self.navigationController.viewControllers.count);
+        
+        MasterViewController * mvc  = [[UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle:nil] instantiateViewControllerWithIdentifier:@"MVC"];
+        mvc.managedObjectContext = self.managedObjectContext;
+        mvc.appDelegate = self.appDelegate;
+        self.navigationController.viewControllers = [NSArray arrayWithObjects:mvc,self,nil];
+
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
+        NSLog(@"Parents %d after", self.appDelegate.parentStack.count);
+}
+
 - (void)insertNewObject:(id)sender
 {
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+    Event *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
     
-    // If appropriate, configure the new managed object.
-    // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
     [newManagedObject setValue:[NSDate date] forKey:@"timeStamp"];
+    [newManagedObject setValue:[NSNumber numberWithInt:0] forKey:@"used"];
+    [newManagedObject setParent:[self.appDelegate.parentStack peek]];
     
+    [newManagedObject setValue:[NSNumber numberWithInt:(((Event*)[self.appDelegate.parentStack peek]).depth.intValue+1)] forKey:@"depth"];
+    NSLog(@"%@  --- - - - %d", [self.appDelegate.parentStack peek], newManagedObject.depth.intValue);
     // Save the context.
+    insertMode = YES;
     NSError *error = nil;
     if (![context save:&error]) {
          // Replace this implementation with code to handle the error appropriately.
@@ -77,7 +99,17 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    UITableViewCell *cell;
+    if (insertMode && indexPath.row == 0)
+    {
+        cell = [[NewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"NewCell"];
+        NSLog(@"Add mode");
+        
+        return cell;
+    }
+    
+    cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
@@ -86,6 +118,14 @@
 {
     // Return NO if you do not want the specified item to be editable.
     return YES;
+}
+
+-(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (insertMode && indexPath.row ==0  && indexPath.section ==0)
+        return 100;
+    else
+        return 60;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -114,17 +154,24 @@
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        self.detailViewController.detailItem = object;
+//        self.detailViewController.detailItem = object;
     }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
+//    if ([[segue identifier] isEqualToString:@"showDetail"])
+//    {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        [[segue destinationViewController] setDetailItem:object];
-    }
+        Event* object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        [self.appDelegate.parentStack push:object];
+    
+        MasterViewController * mvc  = [segue destinationViewController];
+        mvc.managedObjectContext = self.managedObjectContext;
+        mvc.appDelegate = self.appDelegate;
+
+        NSLog(@"Count %d", self.appDelegate.parentStack.count);
+//    }
 }
 
 #pragma mark - Fetched results controller
@@ -143,6 +190,16 @@
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
+    NSLog(@"%d", ((Event*)self.appDelegate.parentStack.peek).depth.intValue);
+    NSLog(@"depth == %@ AND parent == %@", [NSNumber numberWithInt:((Event*)self.appDelegate.parentStack.peek).depth.intValue+1], [self.appDelegate.parentStack peek]);
+    
+//    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"used" ascending:YES];
+//    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+//    [fetchRequest setSortDescriptors:sortDescriptors];
+
+    
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"depth == %@ AND parent == %@", [NSNumber numberWithInt:((Event*)self.appDelegate.parentStack.peek).depth.intValue+1], [self.appDelegate.parentStack peek] ]];
+    
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timeStamp" ascending:NO];
     NSArray *sortDescriptors = @[sortDescriptor];
@@ -151,7 +208,7 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     
@@ -216,20 +273,10 @@
     [self.tableView endUpdates];
 }
 
-/*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
- 
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
-}
- */
-
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [[object valueForKey:@"timeStamp"] description];
+    cell.textLabel.text = [[[object objectID] URIRepresentation] absoluteString];
 }
 
 @end
