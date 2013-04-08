@@ -9,10 +9,8 @@
 #import "MasterViewController.h"
 #import "AppDelegate.h"
 #import "DetailViewController.h"
-#import "NewCell.h"
-@interface MasterViewController ()
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
-@end
+#import "Cell.h"
+#import "CoreOperations.h"
 
 @implementation MasterViewController
 
@@ -24,67 +22,95 @@
     }
     [super awakeFromNib];
 }
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem =  [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self action:@selector(back:)];
-    //self.editButtonItem;
-
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
+    UISwipeGestureRecognizer *g = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(forward:)];
+    g.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.tableView addGestureRecognizer:g];
+    
+    UISwipeGestureRecognizer *g2 = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(backward:)];
+    g2.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.tableView addGestureRecognizer:g2];
+    
+    UILongPressGestureRecognizer* l = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    [self.tableView addGestureRecognizer:l];
+    
+    UITapGestureRecognizer *t= [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelEdit)];
+    t.cancelsTouchesInView = NO;
+    [self.tableView addGestureRecognizer:t];
+    
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(createEvent:)];
     self.navigationItem.rightBarButtonItem = addButton;
-//    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
-- (void)back:(id)sender
+#pragma mark GESTURES & OPERATIONS
+- (void)createEvent:(id)sender
+{
+    [[CoreOperations sharedManager] createEventForParent:(Event*)[self.appDelegate.parentStack peek]];
+
+    [self setEditableCell:[NSIndexPath indexPathForRow:0 inSection:0]];
+}
+-(void)longPress:(UILongPressGestureRecognizer*) gesture
+{
+    CGPoint location = [gesture locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+    if (indexPath == nil) return;
+    [self setEditableCell:indexPath];
+}
+-(void)cancelEdit
+{
+    NSLog(@"Cancel edit");
+    [self setEditableCell:nil];
+}
+
+- (void) backwardAction
+{
+    [self.appDelegate.parentStack pop];
+    NSLog(@"%d", self.navigationController.viewControllers.count);
+    
+    MasterViewController * mvc  = [[UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle:nil] instantiateViewControllerWithIdentifier:@"MVC"];
+    mvc.appDelegate = self.appDelegate;
+    
+    Event* event = ((Event*)[self.appDelegate.parentStack peek]);
+    mvc.title = (event?event.name:MvcName);
+
+}
+- (void) backward:(UISwipeGestureRecognizer*) gesture
 {
     NSLog(@"Parents %d", self.appDelegate.parentStack.count);
     if ([self.appDelegate.parentStack count]>0)
     {
-        [self.appDelegate.parentStack pop];
-        NSLog(@"%d", self.navigationController.viewControllers.count);
-        
-        MasterViewController * mvc  = [[UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle:nil] instantiateViewControllerWithIdentifier:@"MVC"];
-        mvc.managedObjectContext = self.managedObjectContext;
-        mvc.appDelegate = self.appDelegate;
-        self.navigationController.viewControllers = [NSArray arrayWithObjects:mvc,self,nil];
-
-        [self.navigationController popToRootViewControllerAnimated:YES];
+//        [self backwardAction];
+        [self.navigationController popViewControllerAnimated:YES];
     }
-        NSLog(@"Parents %d after", self.appDelegate.parentStack.count);
+    NSLog(@"Parents %d after", self.appDelegate.parentStack.count);
 }
-
-- (void)insertNewObject:(id)sender
+-(void) forward:(UISwipeGestureRecognizer*) gesture
 {
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    Event *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+    NSLog(@"Should swipe the hell out of this shit");
+    CGPoint location = [gesture locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+    Event* object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
     
-    [newManagedObject setValue:[NSDate date] forKey:@"timeStamp"];
-    [newManagedObject setValue:[NSNumber numberWithInt:0] forKey:@"used"];
-    [newManagedObject setParent:[self.appDelegate.parentStack peek]];
+    if (object == nil) return;
     
-    [newManagedObject setValue:[NSNumber numberWithInt:(((Event*)[self.appDelegate.parentStack peek]).depth.intValue+1)] forKey:@"depth"];
-    NSLog(@"%@  --- - - - %d", [self.appDelegate.parentStack peek], newManagedObject.depth.intValue);
-    // Save the context.
-    insertMode = YES;
-    NSError *error = nil;
-    if (![context save:&error]) {
-         // Replace this implementation with code to handle the error appropriately.
-         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
+    [self.appDelegate.parentStack push:object];
+    
+    MasterViewController * mvc  = [[MasterViewController alloc] init];
+    mvc.title = object.name;
+    mvc.appDelegate = self.appDelegate;
+
+    [self.appDelegate.navigationController pushViewController:mvc animated:YES];
+    NSLog(@"Count %d", self.appDelegate.parentStack.count);    
 }
 
 #pragma mark - Table View
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -99,80 +125,65 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell;
-    if (insertMode && indexPath.row == 0)
-    {
-        cell = [[NewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"NewCell"];
-        NSLog(@"Add mode");
-        
-        return cell;
-    }
-    
-    cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    
+    Cell* cell = [[Cell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)configureCell:(Cell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+    Event *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.event  =object;
+}
+
+#pragma mark EDITING
+-(void)setEditableCell:(NSIndexPath*) indexPath
+{
+    NSLog(@"Setting editable cell to %@", indexPath);
+    
+    if (editableCell!=nil && ![editableCell isEqual:indexPath])
+    {
+        ((Cell*)[self.tableView cellForRowAtIndexPath:editableCell]).editMode = NO;
+        if ([((Cell*)[self.tableView cellForRowAtIndexPath:editableCell]).txtField.text isEqual:@""])
+        {
+            [[CoreOperations sharedManager] removeEvent:[self.fetchedResultsController objectAtIndexPath:editableCell]];
+        }
+        else [[CoreOperations sharedManager] saveContext];
+    }
+    editableCell = indexPath;
+    if (indexPath)
+    {
+        ((Cell*)[self.tableView cellForRowAtIndexPath:indexPath]).editMode =YES;
+        [[self tableView] scrollToRowAtIndexPath:editableCell atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    }
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (insertMode && indexPath.row ==0  && indexPath.section ==0)
-        return 100;
-    else
-        return 60;
+    return 60;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-        
-        NSError *error = nil;
-        if (![context save:&error]) {
-             // Replace this implementation with code to handle the error appropriately.
-             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-    }   
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+        [[CoreOperations sharedManager] removeEvent:[self.fetchedResultsController objectAtIndexPath:indexPath]];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // The table view should not be re-orderable.
     return NO;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-//        self.detailViewController.detailItem = object;
-    }
+    [self.appDelegate.dialog show:YES inContainer:self.view];
+
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-//    if ([[segue identifier] isEqualToString:@"showDetail"])
-//    {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        Event* object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        [self.appDelegate.parentStack push:object];
-    
-        MasterViewController * mvc  = [segue destinationViewController];
-        mvc.managedObjectContext = self.managedObjectContext;
-        mvc.appDelegate = self.appDelegate;
 
-        NSLog(@"Count %d", self.appDelegate.parentStack.count);
-//    }
-}
+
+
 
 #pragma mark - Fetched results controller
 
@@ -184,7 +195,7 @@
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:[[CoreOperations sharedManager] managedObjectContext]];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number.
@@ -193,10 +204,10 @@
     NSLog(@"%d", ((Event*)self.appDelegate.parentStack.peek).depth.intValue);
     NSLog(@"depth == %@ AND parent == %@", [NSNumber numberWithInt:((Event*)self.appDelegate.parentStack.peek).depth.intValue+1], [self.appDelegate.parentStack peek]);
     
-//    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"used" ascending:YES];
-//    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
-//    [fetchRequest setSortDescriptors:sortDescriptors];
-
+    //    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"used" ascending:YES];
+    //    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    //    [fetchRequest setSortDescriptors:sortDescriptors];
+    
     
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"depth == %@ AND parent == %@", [NSNumber numberWithInt:((Event*)self.appDelegate.parentStack.peek).depth.intValue+1], [self.appDelegate.parentStack peek] ]];
     
@@ -208,20 +219,20 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[CoreOperations sharedManager] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error]) {
-	     // Replace this implementation with code to handle the error appropriately.
-	     // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
 	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 	    abort();
 	}
     
     return _fetchedResultsController;
-}    
+}
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
@@ -250,7 +261,7 @@
     
     switch(type) {
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationLeft];
             break;
             
         case NSFetchedResultsChangeDelete:
@@ -272,11 +283,4 @@
 {
     [self.tableView endUpdates];
 }
-
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [[[object objectID] URIRepresentation] absoluteString];
-}
-
 @end

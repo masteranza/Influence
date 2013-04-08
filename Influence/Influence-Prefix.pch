@@ -19,4 +19,5 @@
 #   define NSLog(...)
 #endif
 
+#define MvcName @"Main"
 #endif

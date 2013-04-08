@@ -13,14 +13,17 @@
 @class AppDelegate;
 #import <CoreData/CoreData.h>
 
-@interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate>
+@interface MasterViewController : UITableViewController<NSFetchedResultsControllerDelegate>
 {
     BOOL insertMode;
+    NSIndexPath *editableCell;
 }
+@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) AppDelegate *appDelegate;
 
-@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-
-- (void)back:(id)sender;
+-(void)forward:(UIGestureRecognizer*) gesture;
+-(void)backwardAction;
+-(void)backward:(id)sender;
+-(void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+-(void)setEditableCell:(NSIndexPath*) index;
 @end
