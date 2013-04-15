@@ -7,7 +7,7 @@
 //
 
 #import "CoreOperations.h"
-
+#import "NSMutableArray+Stack.h"
 @implementation CoreOperations
 @synthesize managedObjectContext =_managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -61,6 +61,91 @@
 - (void) removeEvent:(Event*)event
 {
     [self.managedObjectContext deleteObject:event];
+}
+
+-(BOOL) isUnique:(NSString*) taskName andParent:(Event*) parent
+{
+    NSError *error = nil;
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name like[cd] %@ AND parent == %@", taskName, parent];
+    [request setPredicate:predicate];
+    
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
+    [request setEntity:entity];
+    
+    NSUInteger count = [self.managedObjectContext countForFetchRequest:request error:&error];
+
+    return (count==0);
+}
+
+-(Event*) getIfExists:(NSString*)name forParent:(Event*) parent
+{
+    NSError *error = nil;
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name like[cd] %@ AND parent == %@", name, parent];
+    [request setPredicate:predicate];
+    
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
+    [request setEntity:entity];
+    
+    NSArray* found = [self.managedObjectContext executeFetchRequest:request error:&error];
+    
+    return [found count]==0?nil:found[0];
+}
+
+-(Event*) createEventNamed:(NSString*)name forParent:(Event*) parent
+{
+    Event* newEvent = [self getIfExists:name forParent:parent];
+    if (newEvent!=nil) return newEvent;
+    
+    newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
+    [newEvent setName:name];
+    [newEvent setParent:parent];
+    [newEvent setTimeStamp:[NSDate date]];
+    [newEvent setUsed:[NSNumber numberWithInt:0]];
+    [newEvent setDepth:[NSNumber numberWithInt:parent.depth.intValue+1]];
+    NSLog(@"created at depth %d", parent.depth.intValue);
+    return newEvent;
+}
+
+- (void) deleteAllObjects: (NSString *) entityDescription  {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:entityDescription inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    NSError *error;
+    NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    
+    for (NSManagedObject *managedObject in items) {
+    	[self.managedObjectContext deleteObject:managedObject];
+    }
+    if (![self.managedObjectContext save:&error]) {
+    	NSLog(@"Error deleting %@ - error:%@",entityDescription,error);
+    }
+}
+
+-(void) createDefaultList
+{
+//    [self deleteAllObjects:@"Event"];
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"events" ofType:@"txt"];
+    NSString* fileContents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+    NSArray* allLinedStrings = [fileContents componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    NSMutableArray* parentStack = [[NSMutableArray alloc] initWithCapacity:100];
+    for (int i=0; i<allLinedStrings.count; i++)
+    {
+        NSArray* columns = [allLinedStrings[i] componentsSeparatedByString:@"\t"];
+
+        while ([parentStack count] > columns.count-1) [parentStack pop];
+        
+        NSLog(@"Creating %@ of parent %@", columns[columns.count-1], [[parentStack peek] name]);
+        Event* event = [self createEventNamed:columns[columns.count-1] forParent:[parentStack peek]];
+        [parentStack push:event];
+
+    }
+    [[CoreOperations sharedManager] saveContext];
 }
 
 #pragma mark - Core Data stack

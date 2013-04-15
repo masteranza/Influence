@@ -43,6 +43,12 @@
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(createEvent:)];
     self.navigationItem.rightBarButtonItem = addButton;
 }
+
+-(void) viewWillAppear:(BOOL)animated
+{
+    [[CoreOperations sharedManager] createDefaultList];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -110,7 +116,6 @@
 }
 
 #pragma mark - Table View
-
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -181,10 +186,6 @@
 
 }
 
-
-
-
-
 #pragma mark - Fetched results controller
 
 - (NSFetchedResultsController *)fetchedResultsController
@@ -209,20 +210,19 @@
     //    [fetchRequest setSortDescriptors:sortDescriptors];
     
     
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"depth == %@ AND parent == %@", [NSNumber numberWithInt:((Event*)self.appDelegate.parentStack.peek).depth.intValue+1], [self.appDelegate.parentStack peek] ]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"depth == %@ AND parent == %@", [NSNumber numberWithInt:((Event*)self.appDelegate.parentStack.peek).depth.intValue+1], [self.appDelegate.parentStack peek]]];
     
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timeStamp" ascending:NO];
     NSArray *sortDescriptors = @[sortDescriptor];
-    
     [fetchRequest setSortDescriptors:sortDescriptors];
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[CoreOperations sharedManager] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
+    
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
-    
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error]) {
         // Replace this implementation with code to handle the error appropriately.
@@ -230,7 +230,7 @@
 	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 	    abort();
 	}
-    
+    NSLog(@"Fetched objects: %d", [[_fetchedResultsController fetchedObjects] count]);
     return _fetchedResultsController;
 }
 

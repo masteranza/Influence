@@ -1,0 +1,16 @@
+Food
+	Hamburger
+		Beef
+		Chicken
+		Vegetarian
+Drink
+	Coffee
+		With Milk
+	Alcohol
+		Whiskey
+		Beer
+		Vodka
+Mood
+	Positive
+	Negative
+	Neutral

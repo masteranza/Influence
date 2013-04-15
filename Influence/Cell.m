@@ -20,6 +20,7 @@
         self.txtField.autoresizesSubviews=YES;
         [self.txtField setPlaceholder:@"Type name here"];
         self.txtField.delegate = self;
+        self.txtField.autocorrectionType = UITextAutocorrectionTypeNo;
         [self.contentView addSubview:self.txtField];
         //txtField.layer.cornerRadius=10.0;
         //[self.txtField setBorderStyle:UITextBorderStyleLine];

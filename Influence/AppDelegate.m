@@ -49,14 +49,17 @@
     self.parentStack = [[NSMutableArray alloc] init];
     
     MasterViewController *controller;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+    {
         UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
         UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
         splitViewController.delegate = (id)navigationController.topViewController;
         
         UINavigationController *masterNavigationController = splitViewController.viewControllers[0];
         controller = (MasterViewController *)masterNavigationController.topViewController;
-    } else {
+    }
+    else
+    {
         self.navigationController = (UINavigationController *)self.window.rootViewController;
         controller = (MasterViewController *)self.navigationController.topViewController;
     }

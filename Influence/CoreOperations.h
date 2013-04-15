@@ -20,6 +20,10 @@
 
 -(void) removeEvent:(Event*)event;
 
+-(BOOL) isUnique:(NSString*) taskName andParent:(Event*) parent;
+-(Event*) getIfExists:(NSString*)name forParent:(Event*) parent;
+
 -(Event*) createEventForParent:(Event*) parent;
 -(Log*) log:(int) value withNote:(NSString*) note For:(Event*)event atTime:(NSDate*)date;
+-(void) createDefaultList;
 @end
