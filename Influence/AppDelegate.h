@@ -23,5 +23,3 @@
 
 @property (strong, nonatomic) DHDialogViewController *dialog;
 @end
-
-//test
