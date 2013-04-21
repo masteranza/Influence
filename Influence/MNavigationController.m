@@ -31,4 +31,9 @@
     return [super popViewControllerAnimated:YES];
 }
 
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    return YES;
+}
+
 @end
