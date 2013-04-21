@@ -15,5 +15,6 @@
 @dynamic date;
 @dynamic quantity;
 @dynamic event;
+@dynamic note;
 
 @end

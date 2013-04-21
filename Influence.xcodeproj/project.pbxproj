@@ -25,6 +25,7 @@
 		DE88DBA216EB8EA1007604AC /* Log.m in Sources */ = {isa = PBXBuildFile; fileRef = DE88DBA116EB8EA1007604AC /* Log.m */; };
 		DE88DBA516EB8EAD007604AC /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = DE88DBA416EB8EAD007604AC /* Event.m */; };
 		DE88DBA816EB948B007604AC /* NSMutableArray+Stack.m in Sources */ = {isa = PBXBuildFile; fileRef = DE88DBA716EB948B007604AC /* NSMutableArray+Stack.m */; };
+		DEB2BEB0172341D5004E71BF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEB2BEAF172341D5004E71BF /* QuartzCore.framework */; };
 		DEC532C216F5C13D0056C40C /* Cell.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC532C116F5C13D0056C40C /* Cell.m */; };
 		DEC532C516F5C6A30056C40C /* CoreOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC532C416F5C6A30056C40C /* CoreOperations.m */; };
 		DEE4D067171BFED90019139F /* events.txt in Resources */ = {isa = PBXBuildFile; fileRef = DEE4D066171BFED90019139F /* events.txt */; };
@@ -66,6 +67,8 @@
 		DE88DBA416EB8EAD007604AC /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Event.m; path = ../Event.m; sourceTree = "<group>"; };
 		DE88DBA616EB948B007604AC /* NSMutableArray+Stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Stack.h"; sourceTree = "<group>"; };
 		DE88DBA716EB948B007604AC /* NSMutableArray+Stack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Stack.m"; sourceTree = "<group>"; };
+		DEB2BEAF172341D5004E71BF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		DEB2BEB11723EF7E004E71BF /* Influence 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Influence 2.xcdatamodel"; sourceTree = "<group>"; };
 		DEC532C016F5C13D0056C40C /* Cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cell.h; sourceTree = "<group>"; };
 		DEC532C116F5C13D0056C40C /* Cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cell.m; sourceTree = "<group>"; };
 		DEC532C316F5C6A30056C40C /* CoreOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreOperations.h; sourceTree = "<group>"; };
@@ -90,6 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEB2BEB0172341D5004E71BF /* QuartzCore.framework in Frameworks */,
 				DE88DB6916EB8477007604AC /* UIKit.framework in Frameworks */,
 				DE88DB6B16EB8477007604AC /* Foundation.framework in Frameworks */,
 				DE88DB6D16EB8477007604AC /* CoreGraphics.framework in Frameworks */,
@@ -129,6 +133,7 @@
 		DE88DB6716EB8477007604AC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DEB2BEAF172341D5004E71BF /* QuartzCore.framework */,
 				DE88DB6816EB8477007604AC /* UIKit.framework */,
 				DE88DB6A16EB8477007604AC /* Foundation.framework */,
 				DE88DB6C16EB8477007604AC /* CoreGraphics.framework */,
@@ -464,9 +469,10 @@
 		DE88DB8816EB8477007604AC /* Influence.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				DEB2BEB11723EF7E004E71BF /* Influence 2.xcdatamodel */,
 				DE88DB8916EB8477007604AC /* Influence.xcdatamodel */,
 			);
-			currentVersion = DE88DB8916EB8477007604AC /* Influence.xcdatamodel */;
+			currentVersion = DEB2BEB11723EF7E004E71BF /* Influence 2.xcdatamodel */;
 			path = Influence.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -38,7 +38,6 @@
 @end
 
 
-
 @implementation CPPickerViewCell
 
 @synthesize pickerView;
@@ -107,7 +106,8 @@
 #pragma mark CPPickerView Delegate
 
 - (void)pickerView:(CPPickerView *)pickerView didSelectItem:(NSInteger)item {
-    if ([self.delegate respondsToSelector:@selector(pickerViewAtIndexPath:didSelectItem:)]) {
+    if ([self.delegate respondsToSelector:@selector(pickerViewAtIndexPath:didSelectItem:)])
+	{
         [self.delegate pickerViewAtIndexPath:self.currentIndexPath didSelectItem:item];
     }
 }

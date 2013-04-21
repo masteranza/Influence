@@ -1,15 +1,44 @@
-Food
-	Hamburger
-		Beef
-		Chicken
-		Vegetarian
+Behaviour
+	Running
+	Dancing
 Drink
+	Tee
+		Black
+			Tetley
+			Lipton
+		Grey
+		Green
+		White
 	Coffee
 		With Milk
 	Alcohol
 		Whiskey
 		Beer
 		Vodka
+Drugs
+	Nootropics
+		Centrophenoxine
+		Noopept		
+			Noopept (Phoenix Nutrition)
+		Piracetam
+			Geracetam
+		L-Tyrosine
+		Taurine
+		Melatonin
+		Bacopa Monneri
+		Sulbutiamine
+		Vitamin
+			A
+			B
+			C
+			K
+Food
+	
+	Peanut Butter
+	Hamburger
+		Beef
+		Chicken
+		Vegetarian
 Mood
 	Positive
 	Negative

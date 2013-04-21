@@ -20,6 +20,7 @@
 }
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) AppDelegate *appDelegate;
+@property (strong, nonatomic) UITapGestureRecognizer *tapGesture;
 
 -(void)forward:(UIGestureRecognizer*) gesture;
 -(void)backwardAction;

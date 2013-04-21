@@ -14,6 +14,7 @@
 @interface Log : NSManagedObject
 
 @property (nonatomic, retain) NSDate * date;
+@property (nonatomic, retain) NSString * note;
 @property (nonatomic, retain) NSNumber * quantity;
 @property (nonatomic, retain) Event *event;
 

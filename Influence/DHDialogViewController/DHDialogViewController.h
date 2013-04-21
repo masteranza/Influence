@@ -34,26 +34,31 @@
 @class DHDialogViewController;
 @protocol DHDialogViewControllerDelegate <NSObject>
 - (void)dialog:(DHDialogViewController*)dialog didChangeVisibility:(BOOL)visibleFlag;
+- (void)presentDatetimePicker;
 @end
 
-@interface DHDialogViewController : UIViewController<DHNoBubblingViewDeleage> {
-    BOOL _touchedBacground;
+
+@interface DHDialogViewController : UIViewController<DHNoBubblingViewDeleage, UITextViewDelegate> {
+    BOOL _touchedBackground;
+	NSDateFormatter *dateFormatter;
+	BOOL visible;
 }
 
-// Properties
-@property BOOL animationEnabled;
 @property BOOL touchOusideToClose;
+@property (strong, nonatomic) UIButton* datetimeButton;
 @property (strong, nonatomic) UIView * contentView;
-@property (strong, nonatomic) UIButton * closeButton;
+@property (strong, nonatomic) UIButton * logButton;
 @property (nonatomic) id<DHDialogViewControllerDelegate, CPPickerViewDelegate, CPPickerViewDataSource> delegate;
 @property (strong, nonatomic) CPPickerView* pickerView;
+@property (strong, nonatomic) UITextView* textView;
 
-// Initialization
 - (id)initWithContentSize:(CGSize)size forFrame:(CGRect)rect delegate:(id)delegate;
 
-// Instance Methods
 - (void)show:(BOOL)visibleFlag inContainer:(UIView*) container;
 - (void)hide;
+- (BOOL)isVisible;
+- (void)presentDatatimePicker;
+- (void)dateChanged:(UIDatePicker*)datetimePicker;
 - (void)loadContentFromView:(UIView*)view withFrame:(CGRect)frame;
 - (void)loadContentFromURL:(NSString*)url withFrame:(CGRect)frame;
 @end
