@@ -33,7 +33,6 @@ Drugs
 			C
 			K
 Food
-	
 	Peanut Butter
 	Hamburger
 		Beef

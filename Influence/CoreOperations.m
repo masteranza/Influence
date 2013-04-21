@@ -153,7 +153,8 @@
     for (int i=0; i<allLinedStrings.count; i++)
     {
         NSArray* columns = [allLinedStrings[i] componentsSeparatedByString:@"\t"];
-
+		if ([columns[columns.count-1] isEqualToString:@""]) continue;
+		
         while ([parentStack count] > columns.count-1) [parentStack pop];
         
         NSLog(@"Creating %@ of parent %@", columns[columns.count-1], [[parentStack peek] name]);
