@@ -12,6 +12,31 @@
 
 @implementation AppDelegate
 
+- (void)presentDatetimePicker
+{
+	self.datetimePicker.layer.zPosition = 99999;
+	CGRect startFrame = self.datetimePicker.frame;
+	CGRect endFrame = self.datetimePicker.frame;
+	startFrame.origin.y = self.currentViewController.view.frame.size.height;
+	self.datetimePicker.frame = startFrame;
+	[self.currentViewController.view addSubview:self.datetimePicker];
+	
+	[UIView animateWithDuration:0.3
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction |UIViewAnimationOptionBeginFromCurrentState
+                     animations:^{ CGRect r = self.datetimePicker.frame; r.origin.y= startFrame.origin.y - endFrame.size.height; self.datetimePicker.frame =r; }
+                     completion:^(BOOL f) { if(f){}}];
+}
+
+- (void)hideDatetimePicker
+{
+	if (self.datetimePicker.superview == self.currentViewController.view)
+	[UIView animateWithDuration:0.3
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction |UIViewAnimationOptionBeginFromCurrentState
+                     animations:^{ CGRect r = self.datetimePicker.frame; r.origin.y= self.currentViewController.view.frame.size.height; self.datetimePicker.frame =r; }
+                     completion:^(BOOL f) { if(f){	[self.datetimePicker removeFromSuperview]; }}];
+}
 
 #pragma mark - CPPickerViewDataSource
 
@@ -26,22 +51,49 @@
 }
 
 #pragma mark - CPPickerViewDelegate
-
 - (void)pickerView:(CPPickerView *)pickerView didSelectItem:(NSInteger)item
 {
-//    self.numberLabel.text = [NSString stringWithFormat:@"%i", item + 1];
+	
 }
+///TODO: Add long press to delegate
 
--(void) log:(int) value withNote:(NSString*) note for:(Event*)event atTime:(NSDate*)date;
+-(void) log:(int) value withNote:(NSString*) note
 {
-    Log* log = [[CoreOperations sharedManager] log:value withNote:note For:event atTime:date];
+    Log* log = [[CoreOperations sharedManager] log:value withNote:note For:self.loggingEvent atTime:self.datetimePicker.date];
     if (log)
     {
+		NSLog(@"Logged %@!", log);
         //Prompt log success!
     }
 }
 
+#pragma mark - Helper methods
+-(MasterViewController*)currentViewController
+{
+	return ((MasterViewController*)self.navigationController.childViewControllers[self.navigationController.childViewControllers.count-1]);
+}
 
+#pragma mark - DHDialogViewController
+- (void)dialog:(DHDialogViewController*)dialog didChangeVisibility:(BOOL)visibleFlag
+{
+	if(visibleFlag)
+	{
+		if (!self.datetimePicker)
+		{
+			self.datetimePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, 15, 320, 242)];
+			self.datetimePicker.datePickerMode = UIDatePickerModeDateAndTime;
+			self.datetimePicker.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+			[self.datetimePicker addTarget:self.dialog action:@selector(dateChanged:)
+						  forControlEvents:UIControlEventValueChanged];
+		}
+		//Reset date&time
+		[self.datetimePicker setDate:[NSDate date]];
+		[self.dialog dateChanged:self.datetimePicker];
+	}
+
+	//Block scroll while displaying Log popup window
+	self.currentViewController.tableView.scrollEnabled = !visibleFlag;
+}
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions

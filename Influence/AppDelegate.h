@@ -13,7 +13,7 @@
 #import "DHDialogViewController.h"
 #import "CPPickerView.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, DHDialogViewControllerDelegate, CPPickerViewDataSource, CPPickerViewDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, DHDialogViewControllerDelegate, CPPickerViewDataSource, CPPickerViewDelegate, UIPickerViewDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
@@ -22,4 +22,10 @@
 @property (strong, nonatomic) UINavigationController *navigationController;
 
 @property (strong, nonatomic) DHDialogViewController *dialog;
+@property (strong, nonatomic) UIDatePicker* datetimePicker;
+@property (weak, nonatomic) Event* loggingEvent;
+
+- (MasterViewController*)currentViewController;
+- (void)presentDatetimePicker;
+- (void)hideDatetimePicker;
 @end

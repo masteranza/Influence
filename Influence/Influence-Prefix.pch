@@ -19,5 +19,7 @@
 #   define NSLog(...)
 #endif
 
+
+#define RGBA(r, g, b, a) [UIColor colorWithRed:r green:g blue:b alpha:a]
 #define MvcName @"Main"
 #endif

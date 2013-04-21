@@ -93,6 +93,6 @@
 @protocol CPPickerViewDelegate <NSObject>
 
 - (void)pickerView:(CPPickerView *)pickerView didSelectItem:(NSInteger)item;
-- (void)log:(int) value withNote:(NSString*) note for:(Event*)event atTime:(NSDate*)date;
+- (void)log:(int) value withNote:(NSString*) note;
 
 @end

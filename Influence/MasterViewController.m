@@ -36,9 +36,9 @@
     UILongPressGestureRecognizer* l = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
     [self.tableView addGestureRecognizer:l];
     
-    UITapGestureRecognizer *t= [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelEdit)];
-    t.cancelsTouchesInView = NO;
-    [self.tableView addGestureRecognizer:t];
+    self.tapGesture= [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelEdit:)];
+    self.tapGesture.cancelsTouchesInView = NO;
+    [self.tableView addGestureRecognizer:self.tapGesture];
     
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(createEvent:)];
     self.navigationItem.rightBarButtonItem = addButton;
@@ -68,9 +68,24 @@
     if (indexPath == nil) return;
     [self setEditableCell:indexPath];
 }
--(void)cancelEdit
+
+-(void) selectedRow:(NSIndexPath*) indexPath
+{
+	[self.appDelegate.dialog show:YES inContainer:self.view];
+	self.appDelegate.loggingEvent = [self.fetchedResultsController objectAtIndexPath:indexPath];
+}
+
+-(void)cancelEdit:(UITapGestureRecognizer*) gesture
 {
     NSLog(@"Cancel edit");
+	if (!editableCell)
+	{
+		CGPoint location = [gesture locationInView:self.tableView];
+		NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+		if (indexPath != nil && !self.appDelegate.dialog.isVisible)
+			[self selectedRow:indexPath];
+	}
+	
     [self setEditableCell:nil];
 }
 
@@ -145,12 +160,13 @@
 #pragma mark EDITING
 -(void)setEditableCell:(NSIndexPath*) indexPath
 {
-    NSLog(@"Setting editable cell to %@", indexPath);
+	[self.view endEditing:YES];
+	[self.appDelegate hideDatetimePicker];
     
     if (editableCell!=nil && ![editableCell isEqual:indexPath])
     {
         ((Cell*)[self.tableView cellForRowAtIndexPath:editableCell]).editMode = NO;
-        if ([((Cell*)[self.tableView cellForRowAtIndexPath:editableCell]).txtField.text isEqual:@""])
+        if ([((Cell*)[self.tableView cellForRowAtIndexPath:editableCell]).nameField.text isEqual:@""])
         {
             [[CoreOperations sharedManager] removeEvent:[self.fetchedResultsController objectAtIndexPath:editableCell]];
         }
@@ -180,11 +196,6 @@
     return NO;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self.appDelegate.dialog show:YES inContainer:self.view];
-
-}
 
 #pragma mark - Fetched results controller
 

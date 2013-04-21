@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "Event.h"
 @interface Cell : UITableViewCell <UITextFieldDelegate>
-@property (nonatomic,assign) Event* event;
-@property (nonatomic, retain) UITextField *txtField;
-@property (nonatomic, assign) BOOL editMode;
+@property (nonatomic,weak) Event* event;
+@property (nonatomic, strong) UITextField *nameField;
+@property (nonatomic, strong) UILabel *usedLabel;
+@property (nonatomic, strong) UISegmentedControl *impulse;
+@property (nonatomic) BOOL editMode;
 
 @end
