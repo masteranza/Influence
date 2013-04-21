@@ -17,7 +17,7 @@
 
 - (NSInteger)numberOfItemsInPickerView:(CPPickerView *)pickerView
 {
-    return 100;
+    return 100000;
 }
 
 - (NSString *)pickerView:(CPPickerView *)pickerView titleForItem:(NSInteger)item
