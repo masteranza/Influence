@@ -54,6 +54,11 @@
     [super didReceiveMemoryWarning];
 }
 
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    return YES;
+}
+
 #pragma mark GESTURES & OPERATIONS
 - (void)createEvent:(id)sender
 {
