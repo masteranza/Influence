@@ -81,6 +81,7 @@
     
     self.pickerView = [[CPPickerView alloc] initWithFrame:CGRectMake(10, 40,self.contentView.frame.size.width-20, 40)];
     self.pickerView.backgroundColor = [UIColor whiteColor];
+    self.pickerView.peekInset = UIEdgeInsetsMake(0, 60, 0, 60);
     self.pickerView.dataSource = self.delegate;
     self.pickerView.delegate = self.delegate;
     [self.pickerView reloadData];
