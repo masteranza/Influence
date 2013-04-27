@@ -12,20 +12,22 @@
 #import "MNavigationController.h"
 #import "DHDialogViewController.h"
 #import "CPPickerView.h"
-
+@class ViewController;
 @interface AppDelegate : UIResponder <UIApplicationDelegate, DHDialogViewControllerDelegate, CPPickerViewDataSource, CPPickerViewDelegate, UIPickerViewDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
+@property (strong, nonatomic) NSMutableArray* controllerStack;
+
 @property (strong, nonatomic) NSMutableArray* parentStack;
-@property (strong, nonatomic) MasterViewController* controller;
-@property (strong, nonatomic) UINavigationController *navigationController;
+@property (strong, nonatomic) MasterViewController* mvc;
+@property (strong, nonatomic) ViewController* controller;
+@property (strong, nonatomic) UIScrollView* scrollView;
 
 @property (strong, nonatomic) DHDialogViewController *dialog;
 @property (strong, nonatomic) UIDatePicker* datetimePicker;
 @property (weak, nonatomic) Event* loggingEvent;
 
-- (MasterViewController*)currentViewController;
 - (void)presentDatetimePicker;
 - (void)hideDatetimePicker;
 @end

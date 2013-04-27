@@ -48,9 +48,15 @@
     }
     return self;
 }
-
+-(void) hideAll
+{
+	[self.view endEditing:YES];
+//	[delegate.controller.view endEditing:YES];
+	[delegate hideDatetimePicker];
+}
 - (void)customInitializationWithContentSize:(CGSize)size forFrame:(CGRect)rect
 {
+	NSLog(@"Y: %d", (int)rect.origin.y);
     DHNoBubblingView *view = [[DHNoBubblingView alloc] initWithFrame:rect];
 //	view.exclusiveTouch = YES;
     self.view = view;
@@ -70,7 +76,7 @@
     CGFloat left, top;
     left = (self.view.frame.size.width - size.width)/2;
     // Status bar height (20) is considered by default
-    top  = (self.view.frame.size.height - size.height)/2 -30;
+    top  = (self.view.frame.size.height - size.height)/2-20;
     
     // Styling contentView
     self.contentView = [[DHNoBubblingView alloc] initWithFrame:CGRectMake(left, top, size.width, size.height)];
@@ -108,6 +114,8 @@
 	[self.logButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.logButton addTarget:self action:@selector(hideAndLog) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.logButton];
+	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideAll)];
+	[self.contentView addGestureRecognizer:tap];
 }
 
 // Release all elements
@@ -131,7 +139,13 @@
 {
 	[delegate presentDatetimePicker];
 }
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	NSLog(@"YEYEY");
 
+//	[self.controller.view endEditing:YES];
+	[delegate hideDatetimePicker];
+}
 #pragma mark TextViewDelegate methods
 -(void) textViewDidBeginEditing:(UITextView *)textView
 {
@@ -173,9 +187,12 @@
 #pragma mark Show/Hide methods
 - (void)show:(BOOL)visibleFlag inContainer:(UIView*) container
 {
+//	
+	NSLog(@"%@", container);
 	if (visibleFlag)
 	{
-		self.view.frame = container.frame;
+		self.view.userInteractionEnabled = YES;
+		self.view.frame =  CGRectMake(0, 0, 320, container.frame.size.height);
 		[container addSubview:self.view];
 		self.contentView.transform = CGAffineTransformMakeScale(0.1f, 0.1f);
 		self.view.hidden = NO;
@@ -229,7 +246,6 @@
     [delegate log:self.pickerView.selectedItem withNote:self.textView.text];
     [self hide];
 }
-
 
 - (void)hide
 {

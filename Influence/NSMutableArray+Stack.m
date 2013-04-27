@@ -12,12 +12,12 @@
 
 - (void)push:(id)anObject
 {
-    NSLog(@"Push");
+//    NSLog(@"Push");
     [self addObject:anObject];
 }
 - (id)pop
 {
-    NSLog(@"Pop");
+//    NSLog(@"Pop");
     id obj = nil;
     if(self.count > 0)
     {
@@ -29,7 +29,7 @@
 
 - (id)peek
 {
-    NSLog(@"Peek %d", self.count);
+//    NSLog(@"Peek %d", self.count);
     id obj = nil;
     if(self.count > 0)
     {

@@ -43,7 +43,7 @@
     self.nameField.enabled = editMode;
     if(editMode) [self.nameField becomeFirstResponder];
     else [self.nameField resignFirstResponder];
-    NSLog(@"Set editing on %@ to %@", self.event.name, editMode?@"YES":@"NO");
+//    NSLog(@"Set editing on %@ to %@", self.event.name, editMode?@"YES":@"NO");
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {

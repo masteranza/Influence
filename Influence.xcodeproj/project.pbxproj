@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DE66AC83172BE969009CCD41 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE66AC82172BE969009CCD41 /* ViewController.m */; };
 		DE88DB6916EB8477007604AC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE88DB6816EB8477007604AC /* UIKit.framework */; };
 		DE88DB6B16EB8477007604AC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE88DB6A16EB8477007604AC /* Foundation.framework */; };
 		DE88DB6D16EB8477007604AC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE88DB6C16EB8477007604AC /* CoreGraphics.framework */; };
@@ -17,8 +18,6 @@
 		DE88DB7D16EB8477007604AC /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = DE88DB7C16EB8477007604AC /* Default.png */; };
 		DE88DB7F16EB8477007604AC /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DE88DB7E16EB8477007604AC /* Default@2x.png */; };
 		DE88DB8116EB8477007604AC /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DE88DB8016EB8477007604AC /* Default-568h@2x.png */; };
-		DE88DB8416EB8477007604AC /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE88DB8216EB8477007604AC /* MainStoryboard_iPhone.storyboard */; };
-		DE88DB8716EB8477007604AC /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE88DB8516EB8477007604AC /* MainStoryboard_iPad.storyboard */; };
 		DE88DB8A16EB8477007604AC /* Influence.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE88DB8816EB8477007604AC /* Influence.xcdatamodeld */; };
 		DE88DB8D16EB8477007604AC /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE88DB8C16EB8477007604AC /* MasterViewController.m */; };
 		DE88DB9016EB8477007604AC /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE88DB8F16EB8477007604AC /* DetailViewController.m */; };
@@ -40,6 +39,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DE66AC81172BE969009CCD41 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../ViewController.h; sourceTree = "<group>"; };
+		DE66AC82172BE969009CCD41 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewController.m; path = ../ViewController.m; sourceTree = "<group>"; };
 		DE88DB6516EB8477007604AC /* Influence.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Influence.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE88DB6816EB8477007604AC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		DE88DB6A16EB8477007604AC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -54,8 +55,6 @@
 		DE88DB7C16EB8477007604AC /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		DE88DB7E16EB8477007604AC /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		DE88DB8016EB8477007604AC /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		DE88DB8316EB8477007604AC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
-		DE88DB8616EB8477007604AC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		DE88DB8916EB8477007604AC /* Influence.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Influence.xcdatamodel; sourceTree = "<group>"; };
 		DE88DB8B16EB8477007604AC /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
 		DE88DB8C16EB8477007604AC /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
@@ -68,7 +67,7 @@
 		DE88DBA616EB948B007604AC /* NSMutableArray+Stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Stack.h"; sourceTree = "<group>"; };
 		DE88DBA716EB948B007604AC /* NSMutableArray+Stack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Stack.m"; sourceTree = "<group>"; };
 		DEB2BEAF172341D5004E71BF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		DEB2BEB11723EF7E004E71BF /* Influence 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Influence 2.xcdatamodel"; sourceTree = "<group>"; };
+		DEB2BEB11723EF7E004E71BF /* Influence 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Influence 2.xcdatamodel"; sourceTree = "<group>"; };
 		DEC532C016F5C13D0056C40C /* Cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cell.h; sourceTree = "<group>"; };
 		DEC532C116F5C13D0056C40C /* Cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cell.m; sourceTree = "<group>"; };
 		DEC532C316F5C6A30056C40C /* CoreOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreOperations.h; sourceTree = "<group>"; };
@@ -151,8 +150,8 @@
 				DE88DBA916EB9499007604AC /* Structure */,
 				DE88DB7916EB8477007604AC /* AppDelegate.h */,
 				DE88DB7A16EB8477007604AC /* AppDelegate.m */,
-				DE88DB8216EB8477007604AC /* MainStoryboard_iPhone.storyboard */,
-				DE88DB8516EB8477007604AC /* MainStoryboard_iPad.storyboard */,
+				DE66AC81172BE969009CCD41 /* ViewController.h */,
+				DE66AC82172BE969009CCD41 /* ViewController.m */,
 				DE88DB8B16EB8477007604AC /* MasterViewController.h */,
 				DE88DB8C16EB8477007604AC /* MasterViewController.m */,
 				DEF7ABB717133B7A00E26AC1 /* MNavigationController.h */,
@@ -298,8 +297,6 @@
 				DE88DB7D16EB8477007604AC /* Default.png in Resources */,
 				DE88DB7F16EB8477007604AC /* Default@2x.png in Resources */,
 				DE88DB8116EB8477007604AC /* Default-568h@2x.png in Resources */,
-				DE88DB8416EB8477007604AC /* MainStoryboard_iPhone.storyboard in Resources */,
-				DE88DB8716EB8477007604AC /* MainStoryboard_iPad.storyboard in Resources */,
 				DEF7ABDB1713667600E26AC1 /* horizontalPickerShadow@2x.png in Resources */,
 				DEF7ABDC1713667600E26AC1 /* shadowOverlay@2x.png in Resources */,
 				DEF7ABDD1713667600E26AC1 /* stretchableGlass@2x.png in Resources */,
@@ -329,6 +326,7 @@
 				DEF7ABCF17135DD900E26AC1 /* DHDialogViewController.m in Sources */,
 				DEF7ABD5171363CB00E26AC1 /* CPPickerView.m in Sources */,
 				DEF7ABD6171363CB00E26AC1 /* CPPickerViewCell.m in Sources */,
+				DE66AC83172BE969009CCD41 /* ViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,22 +339,6 @@
 				DE88DB7416EB8477007604AC /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		DE88DB8216EB8477007604AC /* MainStoryboard_iPhone.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				DE88DB8316EB8477007604AC /* en */,
-			);
-			name = MainStoryboard_iPhone.storyboard;
-			sourceTree = "<group>";
-		};
-		DE88DB8516EB8477007604AC /* MainStoryboard_iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				DE88DB8616EB8477007604AC /* en */,
-			);
-			name = MainStoryboard_iPad.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

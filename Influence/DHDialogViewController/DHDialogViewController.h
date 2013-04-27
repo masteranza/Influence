@@ -35,6 +35,7 @@
 @protocol DHDialogViewControllerDelegate <NSObject>
 - (void)dialog:(DHDialogViewController*)dialog didChangeVisibility:(BOOL)visibleFlag;
 - (void)presentDatetimePicker;
+- (void)hideDatetimePicker;
 @end
 
 

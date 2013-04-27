@@ -27,4 +27,6 @@
 -(void)backward:(id)sender;
 -(void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 -(void)setEditableCell:(NSIndexPath*) index;
+-(Event*)selectedEvent:(UIPanGestureRecognizer*) gesture;
+- (void)createEvent:(id)sender;
 @end

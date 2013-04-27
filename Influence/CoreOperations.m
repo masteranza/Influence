@@ -145,6 +145,7 @@
 
 -(void) createDefaultList
 {
+	return;
 //    [self deleteAllObjects:@"Event"];
     NSString* path = [[NSBundle mainBundle] pathForResource:@"events" ofType:@"txt"];
     NSString* fileContents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];

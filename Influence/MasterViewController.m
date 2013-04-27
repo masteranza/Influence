@@ -11,7 +11,7 @@
 #import "DetailViewController.h"
 #import "Cell.h"
 #import "CoreOperations.h"
-
+#import "ViewController.h"
 @implementation MasterViewController
 
 - (void)awakeFromNib
@@ -25,13 +25,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    UISwipeGestureRecognizer *g = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(forward:)];
-    g.direction = UISwipeGestureRecognizerDirectionLeft;
-    [self.tableView addGestureRecognizer:g];
-    
-    UISwipeGestureRecognizer *g2 = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(backward:)];
-    g2.direction = UISwipeGestureRecognizerDirectionRight;
-    [self.tableView addGestureRecognizer:g2];
     
     UILongPressGestureRecognizer* l = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
     [self.tableView addGestureRecognizer:l];
@@ -62,6 +55,7 @@
 #pragma mark GESTURES & OPERATIONS
 - (void)createEvent:(id)sender
 {
+	NSLog(@"SHAD");
     [[CoreOperations sharedManager] createEventForParent:(Event*)[self.appDelegate.parentStack peek]];
 
     [self setEditableCell:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -76,7 +70,8 @@
 
 -(void) selectedRow:(NSIndexPath*) indexPath
 {
-	[self.appDelegate.dialog show:YES inContainer:self.view];
+	NSLog(@"%@", self.appDelegate.dialog);
+	[self.appDelegate.dialog show:YES inContainer:self.appDelegate.controller.view];
 	self.appDelegate.loggingEvent = [self.fetchedResultsController objectAtIndexPath:indexPath];
 }
 
@@ -106,35 +101,41 @@
     mvc.title = (event?event.name:MvcName);
 
 }
-- (void) backward:(UISwipeGestureRecognizer*) gesture
+//- (void) backward:(UISwipeGestureRecognizer*) gesture
+//{
+//    NSLog(@"Parents %d", self.appDelegate.parentStack.count);
+//    if ([self.appDelegate.parentStack count]>0)
+//    {
+////        [self backwardAction];
+//        [self.navigationController popViewControllerAnimated:YES];
+//    }
+//    NSLog(@"Parents %d after", self.appDelegate.parentStack.count);
+//}
+//-(void) forward:(UISwipeGestureRecognizer*) gesture
+//{
+//    NSLog(@"Should swipe the hell out of this shit");
+//    CGPoint location = [gesture locationInView:self.tableView];
+//    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+//    Event* object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+//    
+//    if (object == nil) return;
+//    
+//    [self.appDelegate.parentStack push:object];
+//    
+//    MasterViewController * mvc  = [[MasterViewController alloc] init];
+//    mvc.title = object.name;
+//    mvc.appDelegate = self.appDelegate;
+//
+//    [self.appDelegate.navigationController pushViewController:mvc animated:YES];
+//    NSLog(@"Count %d", self.appDelegate.parentStack.count);    
+//}
+-(Event*)selectedEvent:(UIPanGestureRecognizer*) gesture
 {
-    NSLog(@"Parents %d", self.appDelegate.parentStack.count);
-    if ([self.appDelegate.parentStack count]>0)
-    {
-//        [self backwardAction];
-        [self.navigationController popViewControllerAnimated:YES];
-    }
-    NSLog(@"Parents %d after", self.appDelegate.parentStack.count);
-}
--(void) forward:(UISwipeGestureRecognizer*) gesture
-{
-    NSLog(@"Should swipe the hell out of this shit");
-    CGPoint location = [gesture locationInView:self.tableView];
+	CGPoint location = [gesture locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     Event* object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-    
-    if (object == nil) return;
-    
-    [self.appDelegate.parentStack push:object];
-    
-    MasterViewController * mvc  = [[MasterViewController alloc] init];
-    mvc.title = object.name;
-    mvc.appDelegate = self.appDelegate;
-
-    [self.appDelegate.navigationController pushViewController:mvc animated:YES];
-    NSLog(@"Count %d", self.appDelegate.parentStack.count);    
+	return object;
 }
-
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

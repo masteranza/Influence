@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "CoreOperations.h"
 #import "MasterViewController.h"
-
+#import "ViewController.h"
 @implementation AppDelegate
 
 - (void)presentDatetimePicker
@@ -17,9 +17,9 @@
 	self.datetimePicker.layer.zPosition = 99999;
 	CGRect startFrame = self.datetimePicker.frame;
 	CGRect endFrame = self.datetimePicker.frame;
-	startFrame.origin.y = self.currentViewController.view.frame.size.height;
+	startFrame.origin.y = self.controller.view.frame.size.height;
 	self.datetimePicker.frame = startFrame;
-	[self.currentViewController.view addSubview:self.datetimePicker];
+	[self.controller.view addSubview:self.datetimePicker];
 	
 	[UIView animateWithDuration:0.3
                           delay:0
@@ -30,11 +30,11 @@
 
 - (void)hideDatetimePicker
 {
-	if (self.datetimePicker.superview == self.currentViewController.view)
+//	if (self.datetimePicker.superview == self.controller.view)
 	[UIView animateWithDuration:0.3
                           delay:0
                         options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction |UIViewAnimationOptionBeginFromCurrentState
-                     animations:^{ CGRect r = self.datetimePicker.frame; r.origin.y= self.currentViewController.view.frame.size.height; self.datetimePicker.frame =r; }
+                     animations:^{ CGRect r = self.datetimePicker.frame; r.origin.y= self.controller.view.frame.size.height; self.datetimePicker.frame =r; }
                      completion:^(BOOL f) { if(f){	[self.datetimePicker removeFromSuperview]; }}];
 }
 
@@ -67,12 +67,6 @@
     }
 }
 
-#pragma mark - Helper methods
--(MasterViewController*)currentViewController
-{
-	return ((MasterViewController*)self.navigationController.childViewControllers[self.navigationController.childViewControllers.count-1]);
-}
-
 #pragma mark - DHDialogViewController
 - (void)dialog:(DHDialogViewController*)dialog didChangeVisibility:(BOOL)visibleFlag
 {
@@ -90,35 +84,61 @@
 		[self.datetimePicker setDate:[NSDate date]];
 		[self.dialog dateChanged:self.datetimePicker];
 	}
-
+	else
+	{
+		[self.controller.view endEditing:YES];
+		[self hideDatetimePicker];
+		
+	}
+	
 	//Block scroll while displaying Log popup window
-	self.currentViewController.tableView.scrollEnabled = !visibleFlag;
+//	self.currentViewController.tableView.scrollEnabled = !visibleFlag;
+	self.scrollView.scrollEnabled = !visibleFlag;
 }
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.parentStack = [[NSMutableArray alloc] init];
-    
-    MasterViewController *controller;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
-    {
-        UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-        UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
-        splitViewController.delegate = (id)navigationController.topViewController;
-        
-        UINavigationController *masterNavigationController = splitViewController.viewControllers[0];
-        controller = (MasterViewController *)masterNavigationController.topViewController;
-    }
-    else
-    {
-        self.navigationController = (UINavigationController *)self.window.rootViewController;
-        controller = (MasterViewController *)self.navigationController.topViewController;
-    }
-    controller.appDelegate = self;
-    controller.title = MvcName;
+	self.controllerStack = [[NSMutableArray alloc] init];
 
-    self.dialog = [[DHDialogViewController alloc] initWithContentSize:CGSizeMake(250, 330) forFrame:controller.tableView.frame delegate:self];
+	self.controller = [[ViewController alloc] init];
+	self.controller.view.frame = self.window.frame;
+	self.controller.appDelegate = self;
+	[self.window setRootViewController:self.controller];
+	
+	self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 30, 320, self.controller.view.frame.size.height)];
+	self.controller.scrollView = self.scrollView;
+	self.scrollView.delegate  = self.controller;
+    [self.controller.view addSubview:self.scrollView];
+	[self.controller.view setBackgroundColor:[UIColor redColor]];
+	self.scrollView.pagingEnabled = YES;
+    self.scrollView.contentSize = CGSizeMake(320*10, self.controller.view.frame.size.height-30); //this must be the appropriate size!
+	
+	//Init first MasterViewController
+	self.mvc  = [[MasterViewController alloc] init];
+	self.mvc.view.frame = self.window.frame;
+	self.mvc.appDelegate = self;
+	[self.scrollView addSubview:self.mvc.view];
+	
+//    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+//    {
+//        UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
+//        UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
+//        splitViewController.delegate = (id)navigationController.topViewController;
+//        
+//        UINavigationController *masterNavigationController = splitViewController.viewControllers[0];
+//        controller = (MasterViewController *)masterNavigationController.topViewController;
+//    }
+//    else
+//    {
+//        self.navigationController = (UINavigationController *)self.window.rootViewController;
+//        controller = (MasterViewController *)self.navigationController.topViewController;
+//    }
+//    controller.appDelegate = self;
+//    controller.title = MvcName;
+
+    self.dialog = [[DHDialogViewController alloc] initWithContentSize:CGSizeMake(250, 330) forFrame:self.window.frame delegate:self];
     return YES;
 }
 							
