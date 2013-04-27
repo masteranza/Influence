@@ -8,10 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
-@interface ViewController : UIViewController <UIScrollViewDelegate>
+#import "BreadcrumbView.h"
+
+@interface ViewController : UIViewController <UIScrollViewDelegate, BreadcrumbDelegate>
 @property (strong, nonatomic) AppDelegate *appDelegate;
 @property (strong, nonatomic) UIScrollView *scrollView;
 @property (strong, nonatomic) MasterViewController* viewCandidate;
+@property (strong, nonatomic) BreadcrumbView* breadcrumb;
 
 -(void) removeOldViewControllers;
 @end
