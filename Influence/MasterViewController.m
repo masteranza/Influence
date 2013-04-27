@@ -201,6 +201,10 @@
 {
     return NO;
 }
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return NO;
+}
 
 
 #pragma mark - Fetched results controller

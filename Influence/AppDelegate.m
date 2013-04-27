@@ -107,36 +107,19 @@
 	self.controller.appDelegate = self;
 	[self.window setRootViewController:self.controller];
 	
-	self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 30, 320, self.controller.view.frame.size.height)];
+	self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, NavigationBar, 320, self.controller.view.frame.size.height)];
 	self.controller.scrollView = self.scrollView;
 	self.scrollView.delegate  = self.controller;
     [self.controller.view addSubview:self.scrollView];
 	[self.controller.view setBackgroundColor:[UIColor redColor]];
 	self.scrollView.pagingEnabled = YES;
-    self.scrollView.contentSize = CGSizeMake(320*10, self.controller.view.frame.size.height-30); //this must be the appropriate size!
+    self.scrollView.contentSize = CGSizeMake(640, self.controller.view.frame.size.height-NavigationBar); //this must be the appropriate size!
 	
 	//Init first MasterViewController
 	self.mvc  = [[MasterViewController alloc] init];
 	self.mvc.view.frame = self.window.frame;
 	self.mvc.appDelegate = self;
 	[self.scrollView addSubview:self.mvc.view];
-	
-//    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
-//    {
-//        UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-//        UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
-//        splitViewController.delegate = (id)navigationController.topViewController;
-//        
-//        UINavigationController *masterNavigationController = splitViewController.viewControllers[0];
-//        controller = (MasterViewController *)masterNavigationController.topViewController;
-//    }
-//    else
-//    {
-//        self.navigationController = (UINavigationController *)self.window.rootViewController;
-//        controller = (MasterViewController *)self.navigationController.topViewController;
-//    }
-//    controller.appDelegate = self;
-//    controller.title = MvcName;
 
     self.dialog = [[DHDialogViewController alloc] initWithContentSize:CGSizeMake(250, 330) forFrame:self.window.frame delegate:self];
     return YES;

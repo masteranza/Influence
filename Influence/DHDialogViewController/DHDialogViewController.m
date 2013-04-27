@@ -139,13 +139,6 @@
 {
 	[delegate presentDatetimePicker];
 }
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-	NSLog(@"YEYEY");
-
-//	[self.controller.view endEditing:YES];
-	[delegate hideDatetimePicker];
-}
 #pragma mark TextViewDelegate methods
 -(void) textViewDidBeginEditing:(UITextView *)textView
 {

@@ -26,21 +26,15 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
 	{
-//		UIButton* b = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//		[b setTitle:@"ADD NEW EVENT" forState:UIControlStateNormal];
-//		[b addTarget:self action:@selector(addNew) forControlEvents:UIControlEventTouchUpInside];
-//        [self.view addSubview:b];
-        
         UINavigationBar* bar = [[UINavigationBar alloc] init];
-		bar.frame = CGRectMake(0, 0, 320, 30);
+		bar.frame = CGRectMake(0, 0, 320, NavigationBar);
 		
 		UIBarButtonItem* b = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNew)];
         UINavigationItem* item = [[UINavigationItem alloc] init];
         item.rightBarButtonItem = b;
         bar.items = @[item];
         
-        BreadcrumbView* title = [[BreadcrumbView alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
-//        title.backgroundColor = [UIColor redColor];
+        BreadcrumbView* title = [[BreadcrumbView alloc] initWithFrame:CGRectMake(0, 0, 320, NavigationBar)];
         item.titleView = title;
         self.breadcrumb = title;
         self.breadcrumb.delegate = self;
@@ -58,8 +52,9 @@
 		[((MasterViewController*)[self.appDelegate.controllerStack pop]).view removeFromSuperview];
 		[self.appDelegate.parentStack pop];
 		NSLog(@"POP!");
+		self.scrollView.contentSize = CGSizeMake(320*(self.appDelegate.controllerStack.count+2), self.scrollView.contentSize.height);
 	}
-    
+
     [self.breadcrumb showEventStack:self.appDelegate.parentStack];
 }
 
@@ -80,26 +75,24 @@
 		NSLog(@"LESS");
 	}
 	
-	
-	NSLog(@"Selected event is %@", object.name);
-	
-    if (object == nil) return;
+	if (object == nil) return;
     
+	while (self.scrollView.contentSize.width <= 320*(self.appDelegate.controllerStack.count+1))
+		self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width+320, self.scrollView.contentSize.height);
+
 	MasterViewController * mvc  = [[MasterViewController alloc] init];
 	
     [self.appDelegate.parentStack push:object];
 	[self.appDelegate.controllerStack push:mvc];
     
-//	NSLog(@"%@", self.appDelegate.parentStack);
-//	NSLog(@"Parent stack contains %@", [self.appDelegate.parentStack peek]);
+	NSLog(@"%@", self.appDelegate.parentStack);
+	NSLog(@"Parent stack contains %@", [self.appDelegate.parentStack peek]);
 
 	mvc.view.frame = CGRectMake(320*self.appDelegate.controllerStack.count,0, 320,self.appDelegate.scrollView.frame.size.height);
 	
 	mvc.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     mvc.title = object.name;
     mvc.appDelegate = self.appDelegate;
-	if (self.scrollView.contentSize.width < 320*(self.appDelegate.controllerStack.count+1))
-		self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width*2, self.scrollView.contentSize.height*2);
 	
 	[self.scrollView addSubview:mvc.view];
 }
