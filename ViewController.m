@@ -89,8 +89,6 @@
 	
     [self.appDelegate.parentStack push:object];
 	[self.appDelegate.controllerStack push:mvc];
-
-    [self.breadcrumb showEventStack:self.appDelegate.parentStack];
     
 //	NSLog(@"%@", self.appDelegate.parentStack);
 //	NSLog(@"Parent stack contains %@", [self.appDelegate.parentStack peek]);
@@ -104,6 +102,12 @@
 		self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width*2, self.scrollView.contentSize.height*2);
 	
 	[self.scrollView addSubview:mvc.view];
+}
+
+-(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    if (velocity.x > 0)
+        [self.breadcrumb showEventStack:self.appDelegate.parentStack];
 }
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView

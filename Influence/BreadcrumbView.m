@@ -63,6 +63,9 @@ static const int TITLE_SPACING = 10;
         Event* event = parentStack[i];
         [titles addObject:event.name];
     }
+    
+    CGRect scrollFrame = _scroll.frame;
+    CGSize scrollContentSize = _scroll.contentSize;
 
     NSMutableArray* toRemove = [NSMutableArray array];
     [UIView animateWithDuration:0.25f animations:^{
@@ -73,7 +76,8 @@ static const int TITLE_SPACING = 10;
 //            [title removeFromSuperview];
             [_titleViews removeLastObject];
             [toRemove addObject:title];
-            title.alpha = 0;
+            CGRect titleFrame = title.frame;
+            title.frame = CGRectMake(scrollContentSize.width, 0, titleFrame.size.width, titleFrame.size.height);
         }
 
     } completion:^(BOOL finished) {
@@ -82,7 +86,7 @@ static const int TITLE_SPACING = 10;
         }
     }];
     
-    NSMutableArray* added = [NSMutableArray array];
+
     for (int i = [_titleViews count]; i < [titles count]; i++)
     {
         UILabel* title = [UILabel new];
@@ -93,17 +97,8 @@ static const int TITLE_SPACING = 10;
         title.userInteractionEnabled = YES;
         [_scroll addSubview:title];
         [_titleViews addObject:title];
-        title.alpha = 0;
-        [added addObject:title];
+        title.frame = CGRectMake(scrollContentSize.width, 0, scrollFrame.size.width, scrollFrame.size.height);
     }
-    [UIView animateWithDuration:0.25f animations:^{
-        for (UIView* view in added) {
-            view.alpha = 1;
-        }
-        
-    } completion:^(BOOL finished) {
-
-    }];
     
     for (int i = 0; i < [_titleViews count]; i++)
     {
@@ -111,9 +106,15 @@ static const int TITLE_SPACING = 10;
         title.text = titles[i];
     }
     
-    CGPoint savedPosition = _scroll.contentOffset;
-    [self updatePositions];
-    [self showLastItem: savedPosition];
+//    CGPoint savedPosition = _scroll.contentOffset;
+    
+    [UIView animateWithDuration:0.25f animations:^{
+        [self updatePositions];
+        [self showLastItem];
+        
+    } completion:^(BOOL finished) {
+        
+    }];
 }
 
 -(void)updatePositions
@@ -129,10 +130,10 @@ static const int TITLE_SPACING = 10;
         origin.x += titleSize.width + TITLE_SPACING;
     }
     
-    _scroll.contentSize = CGSizeMake(origin.x, scrollFrame.size.height);
+    _scroll.contentSize = CGSizeMake(fmaxf(origin.x, scrollFrame.size.width), scrollFrame.size.height);
 }
 
--(void)showLastItem:(CGPoint)savedPosition
+-(void)showLastItem
 {
     CGPoint end = CGPointZero;
     
@@ -143,12 +144,12 @@ static const int TITLE_SPACING = 10;
         end.x = fmaxf(end.x, titleFrame.origin.x + titleFrame.size.width);
     }
     
-    _scroll.contentOffset = savedPosition;
-    [UIView animateWithDuration:0.25f animations:^{
+//    _scroll.contentOffset = savedPosition;
+//    [UIView animateWithDuration:0.25f animations:^{
         _scroll.contentOffset = CGPointMake(fmaxf(end.x - _scroll.frame.size.width, 0), 0);
-    } completion:^(BOOL finished) {
-        
-    }];
+//    } completion:^(BOOL finished) {
+//        
+//    }];
 }
 
 -(void)goToPage:(UIGestureRecognizer*)tap
