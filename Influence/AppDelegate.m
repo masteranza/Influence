@@ -30,7 +30,6 @@
 
 - (void)hideDatetimePicker
 {
-//	if (self.datetimePicker.superview == self.controller.view)
 	[UIView animateWithDuration:0.3
                           delay:0
                         options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction |UIViewAnimationOptionBeginFromCurrentState
@@ -103,7 +102,7 @@
 	self.controllerStack = [[NSMutableArray alloc] init];
 
 	self.controller = [[ViewController alloc] init];
-	self.controller.view.frame = self.window.frame;
+	self.controller.view.frame = CGRectMake(0, 0, 320, self.window.frame.size.height-20);
 	self.controller.appDelegate = self;
 	[self.window setRootViewController:self.controller];
 	
@@ -117,7 +116,7 @@
 	
 	//Init first MasterViewController
 	self.mvc  = [[MasterViewController alloc] init];
-	self.mvc.view.frame = self.window.frame;
+	self.mvc.view.frame = CGRectMake(0, 0, 320, self.controller.view.frame.size.height-NavigationBar);
 	self.mvc.appDelegate = self;
 	[self.scrollView addSubview:self.mvc.view];
 

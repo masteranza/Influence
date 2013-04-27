@@ -56,8 +56,8 @@ static const int TITLE_SPACING = 10;
 -(void)showEventStack:(NSArray*)parentStack
 {
     NSMutableArray* titles = [NSMutableArray array];
-    [titles addObject:@"Root"];
-    
+    [titles addObject:@"/"];
+    NSLog(@"Works");
     for (int i = 0; i < [parentStack count]; i++)
     {
         Event* event = parentStack[i];
@@ -89,6 +89,7 @@ static const int TITLE_SPACING = 10;
 
     for (int i = [_titleViews count]; i < [titles count]; i++)
     {
+
         UILabel* title = [UILabel new];
         title.backgroundColor = [UIColor clearColor];
         title.textColor = [UIColor whiteColor];

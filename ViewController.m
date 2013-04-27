@@ -47,7 +47,7 @@
 -(void) removeOldViewControllers
 {
 	CGFloat xOffset = self.scrollView.contentOffset.x;
-	while (xOffset /320.0 < [self.appDelegate.controllerStack count])
+	while ([self.appDelegate.controllerStack count]>0 && xOffset /320.0 < [self.appDelegate.controllerStack count])
 	{
 		[((MasterViewController*)[self.appDelegate.controllerStack pop]).view removeFromSuperview];
 		[self.appDelegate.parentStack pop];
@@ -81,16 +81,12 @@
 		self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width+320, self.scrollView.contentSize.height);
 
 	MasterViewController * mvc  = [[MasterViewController alloc] init];
-	
     [self.appDelegate.parentStack push:object];
 	[self.appDelegate.controllerStack push:mvc];
     
-	NSLog(@"%@", self.appDelegate.parentStack);
 	NSLog(@"Parent stack contains %@", [self.appDelegate.parentStack peek]);
 
-	mvc.view.frame = CGRectMake(320*self.appDelegate.controllerStack.count,0, 320,self.appDelegate.scrollView.frame.size.height);
-	
-	mvc.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+	mvc.view.frame = CGRectMake(320*self.appDelegate.controllerStack.count,0, 320,self.appDelegate.scrollView.frame.size.height-NavigationBar);
     mvc.title = object.name;
     mvc.appDelegate = self.appDelegate;
 	
@@ -118,7 +114,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+	
+}
+
+-(void) viewWillAppear:(BOOL)animated
+{
+	[self.breadcrumb showEventStack:self.appDelegate.parentStack];
 }
 
 - (void)didReceiveMemoryWarning

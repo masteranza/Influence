@@ -55,7 +55,8 @@
 #pragma mark GESTURES & OPERATIONS
 - (void)createEvent:(id)sender
 {
-	NSLog(@"SHAD");
+	if ([((Cell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]]).nameField.text isEqual:@""])
+		return;
     [[CoreOperations sharedManager] createEventForParent:(Event*)[self.appDelegate.parentStack peek]];
 
     [self setEditableCell:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -70,7 +71,6 @@
 
 -(void) selectedRow:(NSIndexPath*) indexPath
 {
-	NSLog(@"%@", self.appDelegate.dialog);
 	[self.appDelegate.dialog show:YES inContainer:self.appDelegate.controller.view];
 	self.appDelegate.loggingEvent = [self.fetchedResultsController objectAtIndexPath:indexPath];
 }
@@ -78,57 +78,26 @@
 -(void)cancelEdit:(UITapGestureRecognizer*) gesture
 {
     NSLog(@"Cancel edit");
+	CGPoint location = [gesture locationInView:self.tableView];
+	NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+	NSString* name = ((Event*)[self.fetchedResultsController objectAtIndexPath:indexPath]).name;
+	NSLog(@">>> %@ index %@ and name %@", editableCell, indexPath, name);
+	if (indexPath != nil && (name ==nil || [name isEqualToString:@""])){
+		[self setEditableCell:indexPath];
+		return;
+	}
+
 	if (!editableCell)
 	{
-		CGPoint location = [gesture locationInView:self.tableView];
-		NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
 		if (indexPath != nil && !self.appDelegate.dialog.isVisible)
+		{
 			[self selectedRow:indexPath];
+		}
 	}
 	
     [self setEditableCell:nil];
 }
 
-- (void) backwardAction
-{
-    [self.appDelegate.parentStack pop];
-    NSLog(@"%d", self.navigationController.viewControllers.count);
-    
-    MasterViewController * mvc  = [[UIStoryboard storyboardWithName:@"MainStoryboard_iPhone" bundle:nil] instantiateViewControllerWithIdentifier:@"MVC"];
-    mvc.appDelegate = self.appDelegate;
-    
-    Event* event = ((Event*)[self.appDelegate.parentStack peek]);
-    mvc.title = (event?event.name:MvcName);
-
-}
-//- (void) backward:(UISwipeGestureRecognizer*) gesture
-//{
-//    NSLog(@"Parents %d", self.appDelegate.parentStack.count);
-//    if ([self.appDelegate.parentStack count]>0)
-//    {
-////        [self backwardAction];
-//        [self.navigationController popViewControllerAnimated:YES];
-//    }
-//    NSLog(@"Parents %d after", self.appDelegate.parentStack.count);
-//}
-//-(void) forward:(UISwipeGestureRecognizer*) gesture
-//{
-//    NSLog(@"Should swipe the hell out of this shit");
-//    CGPoint location = [gesture locationInView:self.tableView];
-//    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
-//    Event* object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-//    
-//    if (object == nil) return;
-//    
-//    [self.appDelegate.parentStack push:object];
-//    
-//    MasterViewController * mvc  = [[MasterViewController alloc] init];
-//    mvc.title = object.name;
-//    mvc.appDelegate = self.appDelegate;
-//
-//    [self.appDelegate.navigationController pushViewController:mvc animated:YES];
-//    NSLog(@"Count %d", self.appDelegate.parentStack.count);    
-//}
 -(Event*)selectedEvent:(UIPanGestureRecognizer*) gesture
 {
 	CGPoint location = [gesture locationInView:self.tableView];
@@ -168,7 +137,8 @@
 {
 	[self.view endEditing:YES];
 	[self.appDelegate hideDatetimePicker];
-    
+    NSLog(@"%@ index %@", editableCell, indexPath);
+
     if (editableCell!=nil && ![editableCell isEqual:indexPath])
     {
         ((Cell*)[self.tableView cellForRowAtIndexPath:editableCell]).editMode = NO;
@@ -234,8 +204,10 @@
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"depth == %@ AND parent == %@", [NSNumber numberWithInt:((Event*)self.appDelegate.parentStack.peek).depth.intValue+1], [self.appDelegate.parentStack peek]]];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timeStamp" ascending:NO];
-    NSArray *sortDescriptors = @[sortDescriptor];
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"used" ascending:NO];
+	NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
+
+    NSArray *sortDescriptors = @[sortDescriptor, sortDescriptor2];
     [fetchRequest setSortDescriptors:sortDescriptors];
     
     // Edit the section name key path and cache name if appropriate.
