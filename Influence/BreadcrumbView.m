@@ -56,8 +56,6 @@ static const int TITLE_SPACING = 10;
 -(void)showEventStack:(NSArray*)parentStack
 {
     NSMutableArray* titles = [NSMutableArray array];
-    [titles addObject:@"/"];
-    NSLog(@"Works");
     for (int i = 0; i < [parentStack count]; i++)
     {
         Event* event = parentStack[i];

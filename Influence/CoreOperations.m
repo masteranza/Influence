@@ -36,13 +36,14 @@
 {
 	event.used = [NSNumber numberWithInt:event.used.intValue+1];
 
-	while (event.parent)
-	{
-		event = event.parent;
-		event.used = [NSNumber numberWithInt:event.used.intValue+1];
-
+	for (Event* ev in event.parent) {
+		[self incrementUsedRecursivelyIn:ev];
 	}
-
+//	while ([event.parent count]>0)
+//	{
+//		event = event.parent;
+//		event.used = [NSNumber numberWithInt:event.used.intValue+1];
+//	}
 }
 
 - (Log*) log:(int) value withNote:(NSString*) note For:(Event*)event atTime:(NSDate*)date
@@ -64,10 +65,9 @@
 {
     Event *newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
 
-
 	[newEvent setTimeStamp:[NSDate date]];
 	[newEvent setUsed:[NSNumber numberWithInt:0]];
-    [newEvent setParent:parent];
+    [newEvent addParentObject:parent];
 	[newEvent setDepth:[NSNumber numberWithInt:parent.depth.intValue+1]];
     
     [[CoreOperations sharedManager] saveContext];
@@ -84,7 +84,7 @@
     NSError *error = nil;
     
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name like[cd] %@ AND parent == %@", taskName, parent];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NONE parent == nil AND name == %@ AND %@ IN parent", taskName, parent];
     [request setPredicate:predicate];
     
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
@@ -100,7 +100,7 @@
     NSError *error = nil;
     
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name like[cd] %@ AND parent == %@", name, parent];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NONE parent == nil AND name == %@ AND %@ IN parent", name, parent];
     [request setPredicate:predicate];
     
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
@@ -111,14 +111,38 @@
     return [found count]==0?nil:found[0];
 }
 
+-(Event*) createRoot
+{
+	Event* root;// = [self getIfExists:ROOT forParent:nil];
+	NSError *error = nil;
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", ROOT];
+    [request setPredicate:predicate];
+    
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
+    [request setEntity:entity];
+    
+    NSArray* found = [self.managedObjectContext executeFetchRequest:request error:&error];
+    
+    root = [found count]==0?nil:found[0];
+	
+	if (root==nil) root = [self createEventNamed:ROOT forParent:nil];
+	return root;
+}
+
 -(Event*) createEventNamed:(NSString*)name forParent:(Event*) parent
 {
-    Event* newEvent = [self getIfExists:name forParent:parent];
+    Event* newEvent;// = [self getIfExists:name forParent:parent];
     if (newEvent!=nil) return newEvent;
     
     newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
     [newEvent setName:name];
-    [newEvent setParent:parent];
+	if (newEvent.parent == nil)
+		[newEvent setParent:[[NSSet alloc] init]];
+	NSLog(@"Trying to add parent %@ for event %@", parent, name);
+	if (parent!=nil)
+	    [newEvent addParentObject:parent];
     [newEvent setTimeStamp:[NSDate date]];
     [newEvent setUsed:[NSNumber numberWithInt:0]];
     [newEvent setDepth:[NSNumber numberWithInt:parent.depth.intValue+1]];
@@ -145,12 +169,13 @@
 
 -(void) createDefaultList
 {
-	return;
+//	return;
 //    [self deleteAllObjects:@"Event"];
     NSString* path = [[NSBundle mainBundle] pathForResource:@"events" ofType:@"txt"];
     NSString* fileContents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
     NSArray* allLinedStrings = [fileContents componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     NSMutableArray* parentStack = [[NSMutableArray alloc] initWithCapacity:100];
+	[parentStack addObject:[self createRoot]];
     for (int i=0; i<allLinedStrings.count; i++)
     {
         NSArray* columns = [allLinedStrings[i] componentsSeparatedByString:@"\t"];

@@ -27,4 +27,5 @@
 -(Event*) createEventForParent:(Event*) parent;
 -(Log*) log:(int) value withNote:(NSString*) note For:(Event*)event atTime:(NSDate*)date;
 -(void) createDefaultList;
+-(Event*) createRoot;
 @end

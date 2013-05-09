@@ -22,4 +22,5 @@
 #define NavigationBar 40
 #define RGBA(r, g, b, a) [UIColor colorWithRed:r green:g blue:b alpha:a]
 #define MvcName @"Main"
+#define ROOT @"ROOT"
 #endif

@@ -200,8 +200,8 @@
     //    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     //    [fetchRequest setSortDescriptors:sortDescriptors];
     
-    
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"depth == %@ AND parent == %@", [NSNumber numberWithInt:((Event*)self.appDelegate.parentStack.peek).depth.intValue+1], [self.appDelegate.parentStack peek]]];
+
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"NONE parent == nil AND depth == %@ AND %@ IN parent", [NSNumber numberWithInt:((Event*)self.appDelegate.parentStack.peek).depth.intValue+1], [self.appDelegate.parentStack peek]]];
     
     // Edit the sort key as appropriate.
 	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"used" ascending:NO];
