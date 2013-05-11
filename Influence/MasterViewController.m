@@ -39,7 +39,7 @@
 
 -(void) viewWillAppear:(BOOL)animated
 {
-    [[CoreOperations sharedManager] createDefaultList];
+ 
 }
 
 - (void)didReceiveMemoryWarning
@@ -193,15 +193,14 @@
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
-    NSLog(@"%d", ((Event*)self.appDelegate.parentStack.peek).depth.intValue);
-    NSLog(@"depth == %@ AND parent == %@", [NSNumber numberWithInt:((Event*)self.appDelegate.parentStack.peek).depth.intValue+1], [self.appDelegate.parentStack peek]);
+    NSLog(@"Fetch for depth == %@ AND parent == %@", [NSNumber numberWithInt:((Event*)self.appDelegate.parentStack.peek).depth.intValue+1], [self.appDelegate.parentStack peek]);
     
     //    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"used" ascending:YES];
     //    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     //    [fetchRequest setSortDescriptors:sortDescriptors];
     
-
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"NONE parent == nil AND depth == %@ AND %@ IN parent", [NSNumber numberWithInt:((Event*)self.appDelegate.parentStack.peek).depth.intValue+1], [self.appDelegate.parentStack peek]]];
+	// AND %@ IN parent
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"depth == %d AND %@ IN parent", ((Event*)self.appDelegate.parentStack.peek).depth.intValue+1, [self.appDelegate.parentStack peek]]];
     
     // Edit the sort key as appropriate.
 	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"used" ascending:NO];

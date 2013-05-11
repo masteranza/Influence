@@ -100,7 +100,6 @@
     self.controller.scrollView = self.scrollView;
     self.scrollView.delegate  = self.controller;
     [self.controller.view addSubview:self.scrollView];
-    [self.controller.view setBackgroundColor:[UIColor redColor]];
     self.scrollView.pagingEnabled = YES;
     self.scrollView.contentSize = CGSizeMake(640, self.controller.view.frame.size.height - NavigationBar); //this must be the appropriate size!
 	
@@ -108,9 +107,12 @@
     self.mvc  = [[MasterViewController alloc] init];
     self.mvc.view.frame = CGRectMake(0, 0, 320, self.controller.view.frame.size.height - NavigationBar);
     self.mvc.appDelegate = self;
+   
+	
     [self.scrollView addSubview:self.mvc.view];
 	
     self.dialog = [[DHDialogViewController alloc] initWithContentSize:CGSizeMake(250, 330) forFrame:self.window.frame delegate:self];
+	[[CoreOperations sharedManager] createDefaultList];
     return YES;
 }
 

@@ -26,6 +26,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
 	{
+		[self.view setBackgroundColor:[UIColor lightGrayColor]];
         UINavigationBar* bar = [[UINavigationBar alloc] init];
 		bar.frame = CGRectMake(0, 0, 320, NavigationBar);
 		

@@ -10,7 +10,7 @@
         </attribute>
         <attribute name="used" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="logs" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Log" inverseName="event" inverseEntity="Log" syncable="YES"/>
-        <relationship name="parent" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" syncable="YES"/>
+        <relationship name="parent" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="parent" inverseEntity="Event" syncable="YES"/>
         <userInfo/>
     </entity>
     <entity name="Log" representedClassName="Log" syncable="YES">

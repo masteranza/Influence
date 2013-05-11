@@ -25,6 +25,8 @@
 
 -(void) incrementUsedRecursivelyIn:(Event*) event;
 -(Event*) createEventForParent:(Event*) parent;
+-(Event*) getOrCreateEventNamed:(NSString*)name forParent:(Event*) parent;
+
 -(Log*) log:(int) value withNote:(NSString*) note For:(Event*)event atTime:(NSDate*)date;
 -(void) createDefaultList;
 -(Event*) createRoot;

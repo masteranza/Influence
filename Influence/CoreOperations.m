@@ -39,11 +39,6 @@
 	for (Event* ev in event.parent) {
 		[self incrementUsedRecursivelyIn:ev];
 	}
-//	while ([event.parent count]>0)
-//	{
-//		event = event.parent;
-//		event.used = [NSNumber numberWithInt:event.used.intValue+1];
-//	}
 }
 
 - (Log*) log:(int) value withNote:(NSString*) note For:(Event*)event atTime:(NSDate*)date
@@ -100,7 +95,7 @@
     NSError *error = nil;
     
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NONE parent == nil AND name == %@ AND %@ IN parent", name, parent];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@ AND %@ IN parent", name, parent];
     [request setPredicate:predicate];
     
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
@@ -128,25 +123,34 @@
     root = [found count]==0?nil:found[0];
 	
 	if (root==nil) root = [self createEventNamed:ROOT forParent:nil];
+	else NSLog(@"Found an existing ROOT %@", root);
 	return root;
+}
+
+-(Event*) getOrCreateEventNamed:(NSString*)name forParent:(Event*) parent
+{
+	Event* newEvent = [self getIfExists:name forParent:parent];
+    if (newEvent!=nil) return newEvent;
+	newEvent = [self createEventNamed:name forParent:parent];
+	return newEvent;
 }
 
 -(Event*) createEventNamed:(NSString*)name forParent:(Event*) parent
 {
-    Event* newEvent;// = [self getIfExists:name forParent:parent];
-    if (newEvent!=nil) return newEvent;
-    
-    newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
+    Event* newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
     [newEvent setName:name];
 	if (newEvent.parent == nil)
 		[newEvent setParent:[[NSSet alloc] init]];
-	NSLog(@"Trying to add parent %@ for event %@", parent, name);
-	if (parent!=nil)
+
+	if (parent!=nil){
 	    [newEvent addParentObject:parent];
+		[newEvent setDepth:[NSNumber numberWithInt:parent.depth.intValue+1]];
+	}
+	else [newEvent setDepth:[NSNumber numberWithInt:0]]; //ROOT should have depth 0
+	
     [newEvent setTimeStamp:[NSDate date]];
     [newEvent setUsed:[NSNumber numberWithInt:0]];
-    [newEvent setDepth:[NSNumber numberWithInt:parent.depth.intValue+1]];
-    NSLog(@"created at depth %d", parent.depth.intValue);
+    NSLog(@"created new event %@", newEvent);
     return newEvent;
 }
 
@@ -175,16 +179,17 @@
     NSString* fileContents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
     NSArray* allLinedStrings = [fileContents componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     NSMutableArray* parentStack = [[NSMutableArray alloc] initWithCapacity:100];
+	NSLog(@"Creating the default list");
 	[parentStack addObject:[self createRoot]];
     for (int i=0; i<allLinedStrings.count; i++)
     {
         NSArray* columns = [allLinedStrings[i] componentsSeparatedByString:@"\t"];
 		if ([columns[columns.count-1] isEqualToString:@""]) continue;
 		
-        while ([parentStack count] > columns.count-1) [parentStack pop];
+        while ([parentStack count] > columns.count) [parentStack pop];
         
-        NSLog(@"Creating %@ of parent %@", columns[columns.count-1], [[parentStack peek] name]);
-        Event* event = [self createEventNamed:columns[columns.count-1] forParent:[parentStack peek]];
+//        NSLog(@"Creating %@ of parent %@", columns[columns.count-1], [[parentStack peek] name]);
+        Event* event = [self getOrCreateEventNamed:columns[columns.count-1] forParent:[parentStack peek]];
         [parentStack push:event];
 
     }
