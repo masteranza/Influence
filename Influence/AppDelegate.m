@@ -84,7 +84,10 @@
     self.scrollView.scrollEnabled = !visibleFlag;
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
     self.parentStack = [[NSMutableArray alloc] init];
 	Event* root = [[CoreOperations sharedManager] createRoot];
 	[self.parentStack addObject:root];
@@ -95,6 +98,7 @@
     self.controller.view.frame = CGRectMake(0, 0, 320, self.window.frame.size.height - 20);
     self.controller.appDelegate = self;
     [self.window setRootViewController:self.controller];
+    [self.window makeKeyAndVisible];
 	
     self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, NavigationBar, 320, self.controller.view.frame.size.height)];
     self.controller.scrollView = self.scrollView;
